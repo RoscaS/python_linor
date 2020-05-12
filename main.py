@@ -1,5 +1,4 @@
 import random
-import time
 
 import cv2
 import numpy as np
@@ -8,9 +7,6 @@ from src.GUI import GUI
 from src.Image import Image
 from src.Point import Point
 from src.functions import roi, draw_polygon, capture_window, strategy
-
-last_time = 0
-frames = 0
 
 MASK = [
 	Point(10, 650),  # top right
@@ -58,19 +54,12 @@ def main():
 	if GUI.polygon_overlay:
 		draw_polygon(combo_image, MASK)
 
+	#### GUI ####
+
 	# Handle texts
-	global last_time, frames
-	frames += 1
+	GUI.draw(combo_image)
 
-	GUI.write_status(combo_image)
-
-	if GUI.fps_text:
-		fps = round(1 / (time.time() - last_time), 2)
-		last_time = time.time()
-		GUI.write(combo_image, f"frame: {frames}", (10, 20))
-		GUI.write(combo_image, f"fps: {fps}", (10, 45))
-
-	# Handel split image layout
+	# Handle split image layout
 	if GUI.process_overlay:
 		left = combo_image
 
@@ -108,6 +97,9 @@ if __name__ == '__main__':
 		elif key == ord('2'):
 			GUI.polygon_overlay = not GUI.polygon_overlay
 
+		elif key == ord('s'):
+			GUI.vanishing_point_strategy = not GUI.vanishing_point_strategy
+
 		elif key == ord('3'):
 			GUI.clear_overlays()
 			GUI.process_overlay = not GUI.process_overlay
@@ -127,6 +119,8 @@ if __name__ == '__main__':
 		elif key == ord('7') and GUI.process_overlay:
 			GUI.clear_overlays()
 			GUI.masked_overlay = not GUI.masked_overlay
+
+
 
 # last_time = 0
 # while (True):

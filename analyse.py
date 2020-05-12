@@ -13,9 +13,9 @@ from pretreatment import zone_mask, color_mask, morpho_process, apply_canny, \
 	apply_gaussian
 from metadata import MetaData
 from draw import draw_infos, draw_arrow
+from src.Point import Point
 from trapeze import Trapeze
 
-from Tests.Line import Point
 from numpy import ones, vstack
 from numpy.linalg import lstsq
 

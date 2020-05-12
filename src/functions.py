@@ -3,9 +3,9 @@ import math
 import cv2
 import numpy as np
 
+from src.GUI import GUI
 from src.Helpers import Colors
 from src.Line import Line
-from src.Point import Point
 from src.Settings import settings
 from src.grab import capture_screen_region
 
@@ -31,64 +31,37 @@ def draw_polygon(image, vertices, color=Colors.blue()):
 			line.draw(image, color, thickness=1)
 
 
+def strategy(lines, image):
+	if GUI.vanishing_point_strategy:
+		vanishing_strategy(lines, image)
+	else:
+		lane_strategy(lines, image)
 
-def line_intersection(left, right):
-	slope_left = left.slope
-	slope_right = right.slope
 
-	left_y_intercept = left.y_intercept
-	right_y_intercept = right.y_intercept
-
-	if (slope_left == slope_right):
-		print("PARALLEL !")
+def vanishing_strategy(lines, image):
+	if lines is None:
 		return None
 
-	x = (right_y_intercept - left_y_intercept) / (slope_left - slope_right)
-	y = slope_left * x + left_y_intercept
+	left_lines = [i for i in lines if i.slope < 0]
+	right_lines = [i for i in lines if i.slope > 0]
 
-	return Point(x, ((762 - 55) / 2) -y)
+	left_average = Line.average(left_lines)
+	right_average = Line.average(right_lines)
 
+	if left_average is not None:
+		left_average.draw(image, color=Colors.blue())
 
+	if right_average is not None:
+		right_average.draw(image, color=Colors.blue())
 
-def strategy(lines, image):
-	if lines is None: return
+	if not None in [left_average, right_average]:
+		intersection = left_average.intersects(right_average)
+		intersection.draw(image, color=Colors.blue(), thickness=5)
 
-	left_lines, right_lines = [], []
-	left_line, right_line = None, None
-
-	for line in lines:
-		slope = line.slope
-
-		if slope < 0:
-			left_lines.append(line)
-		elif slope > 0:
-			right_lines.append(line)
-
-	l_avg = np.average([i.get() for i in left_lines], axis=0).tolist()
-	r_avg = np.average([i.get() for i in right_lines], axis=0).tolist()
-
-	if (type(l_avg) is list):
-		left_line = Line(coords=l_avg)
-		left_line.draw(image, color=Colors.blue())
-
-	if (type(r_avg) is list):
-		right_line = Line(coords=r_avg)
-		right_line.draw(image, color=Colors.blue())
-
-	if not None in [left_line, right_line]:
-		intersection = line_intersection(left_line, right_line)
-		intersection.draw(image, color=Colors.blue())
-		print(intersection)
 		return intersection
 
 	return None
 
-
-
-
-def vanishing_strategy():
-	pass
-
-def lane_strategy():
+def lane_strategy(lines, image):
 	pass
 
