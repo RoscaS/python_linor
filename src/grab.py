@@ -4,7 +4,7 @@ import numpy as np
 import win32gui, win32ui, win32con, win32api
 
 
-def grab_screen(region=None):
+def capture_screen_region(region=None):
     hwin = win32gui.GetDesktopWindow()
     if region:
             left,top,x2,y2 = region

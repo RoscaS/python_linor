@@ -3,7 +3,15 @@ import numpy as np
 
 from src.Helpers import Colors
 from src.Line import Line
+from src.Settings import settings
+from src.grab import capture_screen_region
 
+
+def capture_window():
+	resolution = settings["resolution"]
+	x_offset = settings["x-offset"]
+	y_offset = settings["y-offset"]
+	return capture_screen_region(region=(x_offset, y_offset, *resolution))
 
 def roi(image, polygons):
 	mask = np.zeros_like(image)
