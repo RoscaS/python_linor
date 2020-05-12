@@ -16,6 +16,9 @@ class Image:
 	def __init__(self, pixels):
 		self.pixels = pixels
 
+
+	# IMPLEMENT LAZY
+
 	@property
 	def np(self) -> np.ndarray:
 		return cv2.cvtColor(self.pixels, cv2.COLOR_BGR2RGB)

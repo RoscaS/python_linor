@@ -1,6 +1,9 @@
 
 class Colors:
 	@classmethod
+	def white(cls): return [255, 255, 255]
+
+	@classmethod
 	def blue(cls): return [0, 0, 255]
 
 	@classmethod

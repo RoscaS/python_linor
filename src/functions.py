@@ -1,4 +1,5 @@
 import math
+from typing import Tuple
 
 import cv2
 import numpy as np
@@ -6,6 +7,7 @@ import numpy as np
 from src.GUI import GUI
 from src.Helpers import Colors
 from src.Line import Line
+from src.Point import Point
 from src.Settings import settings
 from src.grab import capture_screen_region
 
@@ -25,43 +27,24 @@ def roi(image, polygons):
 
 def draw_polygon(image, vertices, color=Colors.blue()):
 	for c, i in enumerate(vertices):
-		# i.draw(image, ray=2, color=color, thickness=5)
 		if c < len(vertices):
 			line = Line(i, vertices[(c + 1) % len(vertices)])
 			line.draw(image, color, thickness=1)
 
 
-def strategy(lines, image):
+def strategy(lines: Tuple[Line or None, Line or None]) -> Point or None:
 	if GUI.vanishing_point_strategy:
-		vanishing_strategy(lines, image)
+		return vanishing_strategy(lines)
 	else:
-		lane_strategy(lines, image)
+		return lane_strategy(lines)
 
 
-def vanishing_strategy(lines, image):
-	if lines is None:
-		return None
-
-	left_lines = [i for i in lines if i.slope < 0]
-	right_lines = [i for i in lines if i.slope > 0]
-
-	left_average = Line.average(left_lines)
-	right_average = Line.average(right_lines)
-
-	if left_average is not None:
-		left_average.draw(image, color=Colors.blue())
-
-	if right_average is not None:
-		right_average.draw(image, color=Colors.blue())
-
-	if not None in [left_average, right_average]:
-		intersection = left_average.intersects(right_average)
-		intersection.draw(image, color=Colors.blue(), thickness=5)
-
+def vanishing_strategy(lines: Tuple[Line or None, Line or None]) -> Point or None:
+	if not None in [lines]:
+		intersection = lines[0].intersects(lines[1])
 		return intersection
-
 	return None
 
-def lane_strategy(lines, image):
+def lane_strategy(lines: Tuple[Line or None, Line or None]) -> Point or None:
 	pass
 

@@ -8,5 +8,10 @@ settings = {
 
 	"default_color": (255, 0, 255),
 
-	"mask_overlay_window": True,
+	"mask_top_y": 410,
+	"mask_bottom_y": 640,
+	"mask_top_width": 450,
+	"mask_bottom_width": 1024,
+
+	"smoothing": 5, # frames number
 }

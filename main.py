@@ -4,16 +4,17 @@ import cv2
 import numpy as np
 
 from src.GUI import GUI
+from src.Helpers import Colors
 from src.Image import Image
+from src.Line import Line
 from src.Point import Point
+from src.Settings import settings
+from src.Smoothing import Smoothing
 from src.functions import roi, draw_polygon, capture_window, strategy
 
-MASK = [
-	Point(10, 650),  # top right
-	Point(1000, 650),  # bottom right
-	Point(900, 480),  # bottom left
-	Point(100, 480),  # top left
-]
+smoothing = Smoothing(settings["smoothing"])
+
+
 
 
 def rand_color():
@@ -23,7 +24,31 @@ def rand_color():
 	return r, g, b
 
 
+
 def main():
+
+	max_width = settings['resolution'][0]
+	top_width = GUI.mask_top_width
+	bottom_width = GUI.mask_bottom_width
+
+	x = (max_width - top_width) / 2
+
+	top_left = x
+	top_right = max_width - x
+
+	xx = (max_width - bottom_width) / 2
+
+	bottom_left = xx
+	bottom_right = max_width - xx
+
+	MASK = [
+		Point(top_left, GUI.mask_top_y),
+		Point(bottom_left, GUI.mask_bottom_y),
+
+		Point(bottom_right, GUI.mask_bottom_y),
+		Point(top_right, GUI.mask_top_y),
+
+	]
 
 	# Image capture
 	screen_cap = capture_window()
@@ -36,19 +61,44 @@ def main():
 	processed = blurred.canny()
 	masked = Image(roi(processed.pixels, [np.array([i.get() for i in MASK])]))
 
-	# Data transformation
-	lines = masked.find_lines()
 
-	# Strategy
-	strategy(lines, canvas)
-
-	# Handle result window
 	if GUI.lines_overlay:
+
+		# Data transformation
+		lines = masked.find_lines()
+
 		if lines is not None:
-			for line in lines:
-				pass
-				# line.draw(canvas, color=rand_color())
-				# line.draw(canvas)
+
+			left_lines = [i for i in lines if i.slope < 0]
+			right_lines = [i for i in lines if i.slope > 0]
+
+			left_average = Line.average(left_lines)
+			right_average = Line.average(right_lines)
+
+			if left_average is not None:
+				smoothing.add_left_line(left_average)
+				# left_average.draw(canvas)
+
+			if right_average is not None:
+				smoothing.add_right_line(right_average)
+				# right_average.draw(canvas)
+
+			# left_line = smoothing.get_left_line()
+			# right_line = smoothing.get_right_line()
+
+		lines = smoothing.get_left_line(), smoothing.get_right_line()
+		intersection = strategy(lines)
+
+		lines[0].draw(canvas, thickness=15)
+		lines[1].draw(canvas, thickness=15)
+		intersection.draw(canvas, thickness=5)
+
+		# if not None in [left_average, right_average]:
+			# 	intersection = strategy((left_average, right_average), canvas)
+
+
+
+
 
 	combo_image = cv2.addWeighted(original, 1, canvas, 0.4, 2)
 	if GUI.polygon_overlay:
@@ -90,6 +140,30 @@ if __name__ == '__main__':
 		if key == ord('q'):
 			cv2.destroyAllWindows()
 			break
+
+
+
+		elif key == ord('u'):
+			GUI.mask_top_y += 10
+		elif key == ord('i'):
+			GUI.mask_top_y -= 10
+
+		elif key == ord('j'):
+			GUI.mask_bottom_y += 10
+		elif key == ord('k'):
+			GUI.mask_bottom_y -= 10
+
+		elif key == ord('y'):
+			GUI.mask_top_width -= 20
+		elif key == ord('o'):
+			GUI.mask_top_width += 20
+
+		elif key == ord('h'):
+			GUI.mask_bottom_width -= 20
+		elif key == ord('l'):
+			GUI.mask_bottom_width += 20
+
+
 
 		elif key == ord('1'):
 			GUI.lines_overlay = not GUI.lines_overlay

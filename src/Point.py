@@ -14,6 +14,7 @@ class Point:
 	A Point is defined by two int components. For some applications,
 	the `get` method returns a tuple containing both components.
 	"""
+
 	def __init__(self, x=0, y=0, point: Iterable = None):
 		point = point if point is not None else x, y
 		self.x = int(point[0])
@@ -32,7 +33,7 @@ class Point:
 	def draw(self,
 			 image: np.ndarray,
 			 ray: int = 2,
-			 color: List[int] = Colors.red(),
+			 color: List[int] = Colors.green(),
 			 thickness: int = 3) -> None:
 		"""
 		Draw self on `img`
@@ -42,3 +43,15 @@ class Point:
 		:param thickness:
 		"""
 		cv2.circle(image, self.get(), ray, color, thickness)
+
+	@classmethod
+	def average(cls, points: List[object]) -> object or None:
+		"""
+		Point that is the average of the points inside `points`
+		:param points: points to average
+		:return: resulting `Point`
+		"""
+		if list is None or len(points) <= 0:
+			return None
+		average = np.median([i.get() for i in points], axis=0).tolist()
+		return Point(point=average)

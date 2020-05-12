@@ -3,6 +3,7 @@ import time
 import cv2
 
 from src.Helpers import Colors
+from src.Settings import settings
 
 
 class GUI:
@@ -33,21 +34,31 @@ class GUI:
 
 	fps_counter = True
 
+	smoothing = settings["smoothing"]
+
+	mask_top_y = settings["mask_top_y"]
+	mask_bottom_y = settings["mask_bottom_y"]
+
+	mask_top_width = settings["mask_top_width"]
+	mask_bottom_width = settings["mask_bottom_width"]
+
+
 
 	@classmethod
 	def draw(cls, image):
 		GUI.show_fps(image)
 		GUI.write_strategy(image)
 		GUI.write_status(image)
+		GUI.mask_text(image)
 
 	@classmethod
 	def show_fps(cls, image):
-		if not GUI.fps_counter: return
+		if not cls.fps_counter: return
 		fps = round(1 / (time.time() - cls._last_time), 2)
-		GUI.write(image, f"frame: {cls._frames}", (10, cls.top_margin))
-		GUI.write(image, f"fps: {fps}", (10, cls.top_margin + cls.line_height))
-		GUI._last_time = time.time()
-		GUI._frames += 1
+		cls.write(image, f"frame: {cls._frames}", (10, cls.top_margin))
+		cls.write(image, f"fps: {fps}", (10, cls.top_margin + cls.line_height))
+		cls._last_time = time.time()
+		cls._frames += 1
 
 	@classmethod
 	def write_strategy(cls, image):
@@ -56,7 +67,7 @@ class GUI:
 			if cls.vanishing_point_strategy \
 			else "Lane center"
 
-		GUI.write(image, f"(s) Strategy: {strategy}", position, Colors.green())
+		cls.write(image, f"(s) Strategy: {strategy}", position, Colors.green())
 
 	@classmethod
 	def write_status(cls, image):
@@ -72,6 +83,22 @@ class GUI:
 		cls.append_col(image, f"(7) Masked overlay", cls.masked_overlay)
 
 	@classmethod
+	def mask_text(cls, image):
+		if not cls.polygon_overlay: return
+		center = 512
+		top_center = (center, cls.mask_top_y - 10)
+		bottom_center = (center, cls.mask_bottom_y - 10)
+		top_left = (5, cls.mask_top_y)
+		bottom_left = (5, cls.mask_bottom_y)
+
+		cls.write(image, f"y = {cls.mask_top_y}px", top_left, Colors.white(), .3, 1)
+		cls.write(image, f"y = {cls.mask_bottom_y}px", bottom_left, Colors.white(), .3, 1)
+
+		cls.write(image, f"<- {cls.mask_top_width}px ->", top_center, Colors.white(), .3, 1)
+		cls.write(image, f"<- {cls.mask_bottom_width}px ->", bottom_center, Colors.white(), .3, 1)
+
+
+	@classmethod
 	def append_col(cls, image, text, value):
 		cls.top_offset += cls.line_height
 		position = (cls.left_margin, cls.top_offset)
@@ -79,9 +106,11 @@ class GUI:
 		cls.write(image, text, position, color)
 
 	@classmethod
-	def write(cls, image, text, position, color=None):
+	def write(cls, image, text, position, color=None, scale=None, thickness=None):
 		color = cls.color if color == None else color
-		cv2.putText(image, text, position, cls.font, cls.font_scale, color, cls.thickness)
+		scale = cls.font_scale if scale == None else scale
+		thickness = cls.thickness if thickness == None else thickness
+		cv2.putText(image, text, position, cls.font, scale, color, thickness)
 
 	@classmethod
 	def clear_overlays(cls):
