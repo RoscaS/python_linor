@@ -1,4 +1,4 @@
-from Tests.directkeys import PressKey, ReleaseKey, W, A, S, D, LEFT, RIGHT
+from src.steering.directkeys import PressKey, ReleaseKey, W, A, D, LEFT, RIGHT
 
 
 # this funtions sends the input to the game which is running on left side of
