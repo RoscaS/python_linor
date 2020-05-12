@@ -5,8 +5,6 @@ import numpy as np
 
 from src.Line import Line
 from src.Point import Point
-from src.Settings import settings
-
 
 class Image:
 	RHO = 1

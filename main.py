@@ -1,18 +1,16 @@
+import random
 import time
 
 import cv2
 import numpy as np
 
-from src.Settings import settings
 from src.GUI import GUI
 from src.Image import Image
 from src.Point import Point
-from src.functions import roi, draw_polygon, capture_window
+from src.functions import roi, draw_polygon, capture_window, strategy
 
 last_time = 0
 frames = 0
-
-
 
 MASK = [
 	Point(10, 650),  # top right
@@ -22,11 +20,19 @@ MASK = [
 ]
 
 
+def rand_color():
+	r = random.randint(0, 255)
+	g = random.randint(0, 255)
+	b = random.randint(0, 255)
+	return r, g, b
+
 
 def main():
+
 	# Image capture
 	screen_cap = capture_window()
 	original = cv2.cvtColor(screen_cap, cv2.COLOR_BGR2RGB)
+	canvas = np.zeros_like(original)
 
 	# Image processing
 	grayed = Image(original).gray()
@@ -37,12 +43,16 @@ def main():
 	# Data transformation
 	lines = masked.find_lines()
 
+	# Strategy
+	strategy(lines, canvas)
+
 	# Handle result window
-	canvas = np.zeros_like(original)
 	if GUI.lines_overlay:
 		if lines is not None:
 			for line in lines:
-				line.draw(canvas)
+				pass
+				# line.draw(canvas, color=rand_color())
+				# line.draw(canvas)
 
 	combo_image = cv2.addWeighted(original, 1, canvas, 0.4, 2)
 	if GUI.polygon_overlay:
@@ -59,8 +69,6 @@ def main():
 		last_time = time.time()
 		GUI.write(combo_image, f"frame: {frames}", (10, 20))
 		GUI.write(combo_image, f"fps: {fps}", (10, 45))
-
-
 
 	# Handel split image layout
 	if GUI.process_overlay:
@@ -81,7 +89,6 @@ def main():
 		cv2.imshow('Linor window', both)
 	else:
 		cv2.imshow('Linor window', combo_image)
-
 
 
 if __name__ == '__main__':
