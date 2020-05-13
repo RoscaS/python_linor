@@ -1,3 +1,12 @@
+"""
+Traitement d'image: Projet final
+Linor Project
+
+INF3b
+Latino Nathan
+Rosca Sol
+"""
+
 from typing import List, Tuple
 
 import cv2
@@ -5,6 +14,7 @@ import numpy as np
 
 from src.Line import Line
 from src.Point import Point
+
 
 class Image:
 	RHO = 1
@@ -16,7 +26,6 @@ class Image:
 	def __init__(self, pixels):
 		self.pixels = pixels
 
-
 	# IMPLEMENT LAZY
 
 	@property
@@ -26,11 +35,14 @@ class Image:
 	def gray(self) -> object:
 		return Image(cv2.cvtColor(self.pixels, cv2.COLOR_BGR2GRAY))
 
-	def gaussian_blur(self, kernel: Tuple[int] = (5, 5), sigma: int = 3) -> object:
+	def gaussian_blur(self, kernel: Tuple[int] = (5, 5),
+					  sigma: int = 3) -> object:
 		return Image(cv2.GaussianBlur(self.pixels, kernel, sigma))
 
 	def canny(self, low_bound: int = 80, high_bound: int = 110) -> object:
-		return Image(cv2.Canny(self.pixels, threshold1=low_bound, threshold2=high_bound))
+		return Image(
+			cv2.Canny(self.pixels, threshold1=low_bound,
+					  threshold2=high_bound))
 
 	def edges(self) -> object:
 		gray = self.gray()
@@ -54,6 +66,3 @@ class Image:
 				lines.append(Line(Point(x1, y1), Point(x2, y2)))
 			return lines
 		return None
-
-
-

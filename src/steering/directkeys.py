@@ -1,3 +1,12 @@
+"""
+Traitement d'image: Projet final
+Linor Project
+
+INF3b
+Latino Nathan
+Rosca Sol
+"""
+
 
 import ctypes
 import time
@@ -42,8 +51,6 @@ class Input_I(ctypes.Union):
 class Input(ctypes.Structure):
     _fields_ = [("type", ctypes.c_ulong),
                 ("ii", Input_I)]
-
-# Actuals Functions
 
 def PressKey(hexKeyCode):
     extra = ctypes.c_ulong(0)

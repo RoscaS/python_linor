@@ -1,5 +1,13 @@
-import time
+"""
+Traitement d'image: Projet final
+Linor Project
 
+INF3b
+Latino Nathan
+Rosca Sol
+"""
+
+import time
 import cv2
 
 from src.Helpers import Colors
@@ -77,20 +85,21 @@ class GUI:
 		if not cls.polygon_overlay:
 			return
 		center = 512
-		top_center = (center, cls.mask_top_y - 10)
-		bottom_center = (center, cls.mask_bottom_y - 10)
-		top_left = (5, cls.mask_top_y)
-		bottom_left = (5, cls.mask_bottom_y)
+		top_center = Point(center-50, cls.mask_top_y - 10)
+		bottom_center =Point(center-50, cls.mask_bottom_y + 20)
+		top_left = Point(5, cls.mask_top_y)
+		bottom_left = Point(5, cls.mask_bottom_y)
 
-		cls.write(image, f"y = {cls.mask_top_y}px", top_left, Colors.white(),
-				  .3, 1)
-		cls.write(image, f"y = {cls.mask_bottom_y}px", bottom_left,
-				  Colors.white(), .3, 1)
+		cls.write(image, f"y = {cls.mask_top_y}px", top_left.get(), Colors.white(), .3, 1)
+		top_left.y += cls.line_height
+		cls.write(image, f"down: (u) up: (i)", top_left.get(), Colors.white(), .3, 1)
 
-		cls.write(image, f"<- {cls.mask_top_width}px ->", top_center,
-				  Colors.white(), .3, 1)
-		cls.write(image, f"<- {cls.mask_bottom_width}px ->", bottom_center,
-				  Colors.white(), .3, 1)
+		cls.write(image, f"y = {cls.mask_bottom_y}px", bottom_left.get(), Colors.white(), .3, 1)
+		bottom_left.y += cls.line_height
+		cls.write(image, f"down: (j) up: (k)", bottom_left.get(), Colors.white(), .3, 1)
+
+		cls.write(image, f"(y) <- {cls.mask_top_width}px -> (o)", top_center.get(), Colors.white(), .3, 1)
+		cls.write(image, f"(h) <- {cls.mask_bottom_width}px -> (l)", bottom_center.get(), Colors.white(), .3, 1)
 
 	@classmethod
 	def draw_target(cls, vanishing_point, hard_image, blended_image):
@@ -119,9 +128,8 @@ class GUI:
 		value = center.x - vanishing_point.x
 		position = center
 		position.x -= 14
-		position.y -= 20
-		cls.write(hard_image, f"{-value}", position.get(), Colors.white(), .5,
-				  1)
+		position.y -= 15
+		cls.write(hard_image, f"{-value}", position.get(), Colors.white(), .5, 1)
 
 	@classmethod
 	def append_col(cls, image, text, value):

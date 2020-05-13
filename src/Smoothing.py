@@ -1,3 +1,11 @@
+"""
+Traitement d'image: Projet final
+Linor Project
+
+INF3b
+Latino Nathan
+Rosca Sol
+"""
 
 from src.Line import Line
 
@@ -6,8 +14,8 @@ class Smoothing:
 
 	def __init__(self, frames: int):
 		self.frames = frames
-		self.left_lines = [Line(coords=[0,0,0,0])]
-		self.right_lines = [Line(coords=[0,0,0,0])]
+		self.left_lines = [Line(coords=[0, 0, 0, 0])]
+		self.right_lines = [Line(coords=[0, 0, 0, 0])]
 
 	def add_left_line(self, line: Line):
 		if len(self.left_lines) >= self.frames:
@@ -24,5 +32,3 @@ class Smoothing:
 
 	def get_right_line(self) -> Line:
 		return Line.average(self.right_lines)
-
-

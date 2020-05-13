@@ -1,3 +1,12 @@
+"""
+Traitement d'image: Projet final
+Linor Project
+
+INF3b
+Latino Nathan
+Rosca Sol
+"""
+
 from typing import Tuple
 
 import cv2
@@ -8,7 +17,7 @@ from src.Helpers import Colors
 from src.Line import Line
 from src.Point import Point
 from src.Settings import settings
-from src.grab import capture_screen_region
+from src.Capture import capture_screen_region
 
 
 def capture_window():

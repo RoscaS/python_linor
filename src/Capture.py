@@ -1,3 +1,11 @@
+"""
+Traitement d'image: Projet final
+Linor Project
+
+INF3b
+Latino Nathan
+Rosca Sol
+"""
 
 import cv2
 import numpy as np

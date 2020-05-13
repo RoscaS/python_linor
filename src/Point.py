@@ -1,3 +1,13 @@
+"""
+Traitement d'image: Projet final
+Linor Project
+
+INF3b
+Latino Nathan
+Rosca Sol
+"""
+
+
 from typing import Iterable, List, Tuple
 
 import cv2

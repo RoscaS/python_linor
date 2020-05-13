@@ -1,4 +1,11 @@
-import random
+"""
+Traitement d'image: Projet final
+Linor Project
+
+INF3b
+Latino Nathan
+Rosca Sol
+"""
 
 import cv2
 import numpy as np
@@ -6,19 +13,22 @@ import numpy as np
 from src.GUI import GUI
 from src.Helpers import Colors
 from src.Image import Image
-from src.Line import Line
 from src.Settings import settings
 from src.Smoothing import Smoothing
-from src.functions import (roi,
-						   draw_polygon,
-						   capture_window,
-						   compute_mask,
-						   compute_vanishing_point, compute_averages,
-						   update_smoothing
-						   )
+from src.functions import (
+	roi,
+	draw_polygon,
+	capture_window,
+	compute_mask,
+	compute_vanishing_point, compute_averages,
+	update_smoothing
+)
 
 
 def main():
+	"""
+	Entry point. Main part of the program loop.
+	"""
 	mask = compute_mask()
 
 	# Screen capture
@@ -32,13 +42,10 @@ def main():
 	processed = blurred.canny()
 	masked = Image(roi(processed.pixels, [np.array([i.get() for i in mask])]))
 
-	# Lines overlay
-
 	lines = masked.find_lines()
-
-
 	color = Colors.green()
 
+	# Computing
 	if lines is not None:
 		update_smoothing(compute_averages(lines), smoothing)
 	else:
@@ -47,15 +54,15 @@ def main():
 	smoothed_lines = smoothing.get_left_line(), smoothing.get_right_line()
 	vanishing_point = compute_vanishing_point(smoothed_lines)
 
-
+	# Lines overlay
 	if GUI.lines_overlay:
 		smoothed_lines[0].draw(canvas, color=color, thickness=15)
 		smoothed_lines[1].draw(canvas, color=color, thickness=15)
 		vanishing_point.draw(canvas, color=color, thickness=5)
 
+	# Target overlay
 	if GUI.target_overlay:
 		GUI.draw_target(vanishing_point, original, canvas)
-
 
 	# Merge original image & overlay
 	combo_image = cv2.addWeighted(original, 1, canvas, 0.4, 2)
@@ -97,7 +104,6 @@ if __name__ == '__main__':
 		if key == ord('q'):
 			cv2.destroyAllWindows()
 			break
-
 
 
 		elif key == ord('u'):
@@ -159,4 +165,3 @@ if __name__ == '__main__':
 		elif key == ord('7') and GUI.process_overlay:
 			GUI.clear_overlays()
 			GUI.masked_overlay = not GUI.masked_overlay
-

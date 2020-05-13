@@ -1,3 +1,11 @@
+"""
+Traitement d'image: Projet final
+Linor Project
+
+INF3b
+Latino Nathan
+Rosca Sol
+"""
 
 settings = {
 	# "resolution": (1920, 1080),
@@ -11,6 +19,5 @@ settings = {
 	"mask_bottom_width": 1064,
 
 	"smoothing": 5, # buffer length
-
 	"target_height": 600,
 }
