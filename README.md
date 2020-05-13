@@ -2,6 +2,8 @@
 
 ## User guide (fr)
 
+* Préférez la version pdf dans le dossier docs/
+
 ### Hiérarchie
 
 
@@ -45,17 +47,17 @@
 
 ### Installation
 
-* <st c="r">CONTAINER INFO Ne fonctionne pas sous Linux. Dépendance à l'API win32.</st>
+* Ne fonctionne pas sous Linux. Dépendance à l'API win32
 * Il est vivement conseillé de faire usage d'un environnement virtuel
 
 1. Téléchargez ou clonez les sources du projet sur github.
 2. Après décompression de l'archive, ouvrez un terminal à la racine du projet.
 3. (optionel) Créez un nouvel environnement virtuel et activez le.
-4. Installation des dépendances avec `$ pip install -e`.
+4. Installation des dépendances avec `$ pip install -e .`
 
 ### Configuration
 
-* <st c="r">CONTAINER INFO Il est vivement recommandé d'utiliser deux écrans ou un écran d'une résolution supérieure à 1920x1080</st>
+* Il est vivement recommandé d'utiliser deux écrans ou un écran d'une résolution supérieure à 1920x1080
 
 Le programme se base sur le fait que l'écran principal (celui où se trouve en principe la barre des tâches) est celui qui affiche le média à traiter et que ce dernier se trouve dans le **coins supérieur gauche** et est affiché dans une fenêtre d'une **résolution de 1024 x 768**.
 
@@ -80,7 +82,7 @@ Une fonctionnalité détaillée au prochain point permet d'ouvrir une seconde vu
 
 ![](https://i.imgur.com/qWfdkR3.jpg)
 
-<st c="r">CONTAINER INFO</st> Cette dernière capture justifie la nécessité d'un second écran ou d'une plus grande résolution.
+Cette dernière capture justifie la nécessité d'un second écran ou d'une plus grande résolution.
 
 
 
