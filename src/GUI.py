@@ -13,7 +13,7 @@ import cv2
 from src.tools.Helpers import Colors
 from src.objects.Line import Line
 from src.objects.Point import Point
-from Settings import settings
+from settings import settings
 
 
 class GUI:

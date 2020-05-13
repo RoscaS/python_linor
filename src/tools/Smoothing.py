@@ -8,7 +8,7 @@ Rosca Sol
 """
 
 from src.objects.Line import Line
-from Settings import settings
+from settings import settings
 
 
 class Smoothing:

@@ -16,7 +16,7 @@ from src.GUI import GUI
 from src.tools.Helpers import Colors
 from src.objects.Line import Line
 from src.objects.Point import Point
-from Settings import settings
+from settings import settings
 from src.tools.Capture import capture_screen_region
 
 
