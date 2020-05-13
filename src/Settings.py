@@ -13,11 +13,11 @@ settings = {
 	"x-offset": 0,
 	"y-offset": 55,
 
-	"mask_top_y": 450,
+	"mask_top_y": 420,
 	"mask_bottom_y": 640,
-	"mask_top_width": 390,
-	"mask_bottom_width": 1064,
+	"mask_top_width": 430,
+	"mask_bottom_width": 1024,
 
-	"smoothing": 5, # buffer length
+	"buffer": 5, # smoothing
 	"target_height": 600,
 }

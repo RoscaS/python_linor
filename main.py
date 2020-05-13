@@ -13,7 +13,6 @@ import numpy as np
 from src.GUI import GUI
 from src.Helpers import Colors
 from src.Image import Image
-from src.Settings import settings
 from src.Smoothing import Smoothing
 from src.functions import (
 	roi,
@@ -94,9 +93,16 @@ def main():
 
 
 if __name__ == '__main__':
-	smoothing = Smoothing(settings["smoothing"])
+	smoothing = Smoothing()
 
 	while (True):
+
+		buffer_increment = 5
+
+		if GUI.buffer <= 1:
+			GUI.buffer = 1
+			buffer_increment = 4
+
 		main()
 
 		key = cv2.waitKey(25) & 0xff
@@ -126,6 +132,13 @@ if __name__ == '__main__':
 		elif key == ord('l'):
 			GUI.mask_bottom_width += 20
 
+		elif key == ord('b'):
+			GUI.buffer -= buffer_increment
+			smoothing.buffer = GUI.buffer
+		elif key == ord('n'):
+			GUI.buffer += buffer_increment
+			smoothing.buffer = GUI.buffer
+
 
 
 		elif key == ord('1'):
@@ -139,8 +152,6 @@ if __name__ == '__main__':
 
 		elif key == ord('t'):
 			GUI.target_overlay = not GUI.target_overlay
-
-
 
 
 		elif key == ord('3'):
@@ -165,3 +176,6 @@ if __name__ == '__main__':
 		elif key == ord('7') and GUI.process_overlay:
 			GUI.clear_overlays()
 			GUI.masked_overlay = not GUI.masked_overlay
+
+
+

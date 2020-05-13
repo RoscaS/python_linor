@@ -31,6 +31,7 @@ class GUI:
 	left_margin = 10
 	line_height = 15
 
+
 	lines_overlay = True
 	target_overlay = True
 	polygon_overlay = False
@@ -43,7 +44,7 @@ class GUI:
 
 	fps_counter = True
 
-	smoothing = settings["smoothing"]
+	buffer = settings["buffer"]
 
 	mask_top_y = settings["mask_top_y"]
 	mask_bottom_y = settings["mask_bottom_y"]
@@ -54,6 +55,7 @@ class GUI:
 	@classmethod
 	def draw(cls, image):
 		GUI.show_fps(image)
+		GUI.buffer_size(image)
 		GUI.write_status(image)
 		GUI.mask_text(image)
 
@@ -68,17 +70,21 @@ class GUI:
 		cls._frames += 1
 
 	@classmethod
+	def buffer_size(cls, image):
+		cls.write(image, f"Buffer size: b <- {cls.buffer} -> n", (10, 70))
+
+	@classmethod
 	def write_status(cls, image):
 		cls.top_offset = cls.DATA_COLUMN_START_TOP
 		cls.left_margin = 10
-		cls.append_col(image, f"(1) Lines overlay", cls.lines_overlay)
-		cls.append_col(image, f"(2) Polygon overlay", cls.polygon_overlay)
-		cls.append_col(image, f"(3) Process overlay", cls.process_overlay)
+		cls.append_col(image, f"1 Lines overlay", cls.lines_overlay)
+		cls.append_col(image, f"2 Polygon overlay", cls.polygon_overlay)
+		cls.append_col(image, f"3 Process overlay", cls.process_overlay)
 		cls.left_margin = 40
-		cls.append_col(image, f"(4) Grayed overlay", cls.grayed_overlay)
-		cls.append_col(image, f"(5) Blured overlay", cls.blured_overlay)
-		cls.append_col(image, f"(6) Processed overlay", cls.processed_overlay)
-		cls.append_col(image, f"(7) Masked overlay", cls.masked_overlay)
+		cls.append_col(image, f"4 Grayed overlay", cls.grayed_overlay)
+		cls.append_col(image, f"5 Blured overlay", cls.blured_overlay)
+		cls.append_col(image, f"6 Processed overlay", cls.processed_overlay)
+		cls.append_col(image, f"7 Masked overlay", cls.masked_overlay)
 
 	@classmethod
 	def mask_text(cls, image):
@@ -92,14 +98,14 @@ class GUI:
 
 		cls.write(image, f"y = {cls.mask_top_y}px", top_left.get(), Colors.white(), .3, 1)
 		top_left.y += cls.line_height
-		cls.write(image, f"down: (u) up: (i)", top_left.get(), Colors.white(), .3, 1)
+		cls.write(image, f"down: u up: i", top_left.get(), Colors.white(), .3, 1)
 
 		cls.write(image, f"y = {cls.mask_bottom_y}px", bottom_left.get(), Colors.white(), .3, 1)
 		bottom_left.y += cls.line_height
-		cls.write(image, f"down: (j) up: (k)", bottom_left.get(), Colors.white(), .3, 1)
+		cls.write(image, f"down: j up: k", bottom_left.get(), Colors.white(), .3, 1)
 
-		cls.write(image, f"(y) <- {cls.mask_top_width}px -> (o)", top_center.get(), Colors.white(), .3, 1)
-		cls.write(image, f"(h) <- {cls.mask_bottom_width}px -> (l)", bottom_center.get(), Colors.white(), .3, 1)
+		cls.write(image, f"y <- {cls.mask_top_width}px -> o", top_center.get(), Colors.white(), .3, 1)
+		cls.write(image, f"h <- {cls.mask_bottom_width}px -> l", bottom_center.get(), Colors.white(), .3, 1)
 
 	@classmethod
 	def draw_target(cls, vanishing_point, hard_image, blended_image):

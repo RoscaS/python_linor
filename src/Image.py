@@ -35,9 +35,8 @@ class Image:
 	def gray(self) -> object:
 		return Image(cv2.cvtColor(self.pixels, cv2.COLOR_BGR2GRAY))
 
-	def gaussian_blur(self, kernel: Tuple[int] = (5, 5),
-					  sigma: int = 3) -> object:
-		return Image(cv2.GaussianBlur(self.pixels, kernel, sigma))
+	def gaussian_blur(self, kernel: Tuple[int] = (5, 5)) -> object:
+		return Image(cv2.GaussianBlur(self.pixels, kernel, 0))
 
 	def canny(self, low_bound: int = 80, high_bound: int = 110) -> object:
 		return Image(
