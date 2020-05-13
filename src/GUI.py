@@ -10,10 +10,10 @@ Rosca Sol
 import time
 import cv2
 
-from src.Helpers import Colors
-from src.Line import Line
-from src.Point import Point
-from src.Settings import settings
+from src.tools.Helpers import Colors
+from src.objects.Line import Line
+from src.objects.Point import Point
+from Settings import settings
 
 
 class GUI:

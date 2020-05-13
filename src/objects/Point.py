@@ -13,7 +13,7 @@ from typing import Iterable, List, Tuple
 import cv2
 import numpy as np
 
-from src.Helpers import Colors
+from src.tools.Helpers import Colors
 
 
 class Point:

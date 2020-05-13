@@ -8,13 +8,13 @@ Rosca Sol
 """
 
 
-from typing import List, Tuple
+from typing import List
 
 import cv2
 import numpy as np
 
-from src.Point import Point
-from src.Helpers import Colors
+from src.objects.Point import Point
+from src.tools.Helpers import Colors
 
 
 class Line:

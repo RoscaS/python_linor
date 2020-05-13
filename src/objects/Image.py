@@ -12,8 +12,8 @@ from typing import List, Tuple
 import cv2
 import numpy as np
 
-from src.Line import Line
-from src.Point import Point
+from src.objects.Line import Line
+from src.objects.Point import Point
 
 
 class Image:

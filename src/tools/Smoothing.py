@@ -7,8 +7,8 @@ Latino Nathan
 Rosca Sol
 """
 
-from src.Line import Line
-from src.Settings import settings
+from src.objects.Line import Line
+from Settings import settings
 
 
 class Smoothing:

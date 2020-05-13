@@ -13,11 +13,11 @@ import cv2
 import numpy as np
 
 from src.GUI import GUI
-from src.Helpers import Colors
-from src.Line import Line
-from src.Point import Point
-from src.Settings import settings
-from src.Capture import capture_screen_region
+from src.tools.Helpers import Colors
+from src.objects.Line import Line
+from src.objects.Point import Point
+from Settings import settings
+from src.tools.Capture import capture_screen_region
 
 
 def capture_window():

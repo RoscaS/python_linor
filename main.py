@@ -11,9 +11,9 @@ import cv2
 import numpy as np
 
 from src.GUI import GUI
-from src.Helpers import Colors
-from src.Image import Image
-from src.Smoothing import Smoothing
+from src.tools.Helpers import Colors
+from src.objects.Image import Image
+from src.tools.Smoothing import Smoothing
 from src.functions import (
 	roi,
 	draw_polygon,
