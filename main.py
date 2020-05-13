@@ -7,50 +7,21 @@ from src.GUI import GUI
 from src.Helpers import Colors
 from src.Image import Image
 from src.Line import Line
-from src.Point import Point
 from src.Settings import settings
 from src.Smoothing import Smoothing
-from src.functions import roi, draw_polygon, capture_window, strategy
-
-smoothing = Smoothing(settings["smoothing"])
-
-
-
-
-def rand_color():
-	r = random.randint(0, 255)
-	g = random.randint(0, 255)
-	b = random.randint(0, 255)
-	return r, g, b
-
+from src.functions import (roi,
+						   draw_polygon,
+						   capture_window,
+						   compute_mask,
+						   compute_vanishing_point, compute_averages,
+						   update_smoothing
+						   )
 
 
 def main():
+	mask = compute_mask()
 
-	max_width = settings['resolution'][0]
-	top_width = GUI.mask_top_width
-	bottom_width = GUI.mask_bottom_width
-
-	x = (max_width - top_width) / 2
-
-	top_left = x
-	top_right = max_width - x
-
-	xx = (max_width - bottom_width) / 2
-
-	bottom_left = xx
-	bottom_right = max_width - xx
-
-	MASK = [
-		Point(top_left, GUI.mask_top_y),
-		Point(bottom_left, GUI.mask_bottom_y),
-
-		Point(bottom_right, GUI.mask_bottom_y),
-		Point(top_right, GUI.mask_top_y),
-
-	]
-
-	# Image capture
+	# Screen capture
 	screen_cap = capture_window()
 	original = cv2.cvtColor(screen_cap, cv2.COLOR_BGR2RGB)
 	canvas = np.zeros_like(original)
@@ -59,57 +30,41 @@ def main():
 	grayed = Image(original).gray()
 	blurred = grayed.gaussian_blur()
 	processed = blurred.canny()
-	masked = Image(roi(processed.pixels, [np.array([i.get() for i in MASK])]))
+	masked = Image(roi(processed.pixels, [np.array([i.get() for i in mask])]))
+
+	# Lines overlay
+
+	lines = masked.find_lines()
+
+
+	color = Colors.green()
+
+	if lines is not None:
+		update_smoothing(compute_averages(lines), smoothing)
+	else:
+		color = Colors.blue()
+
+	smoothed_lines = smoothing.get_left_line(), smoothing.get_right_line()
+	vanishing_point = compute_vanishing_point(smoothed_lines)
 
 
 	if GUI.lines_overlay:
+		smoothed_lines[0].draw(canvas, color=color, thickness=15)
+		smoothed_lines[1].draw(canvas, color=color, thickness=15)
+		vanishing_point.draw(canvas, color=color, thickness=5)
 
-		# Data transformation
-		lines = masked.find_lines()
-
-		if lines is not None:
-
-			left_lines = [i for i in lines if i.slope < 0]
-			right_lines = [i for i in lines if i.slope > 0]
-
-			left_average = Line.average(left_lines)
-			right_average = Line.average(right_lines)
-
-			if left_average is not None:
-				smoothing.add_left_line(left_average)
-				# left_average.draw(canvas)
-
-			if right_average is not None:
-				smoothing.add_right_line(right_average)
-				# right_average.draw(canvas)
-
-			# left_line = smoothing.get_left_line()
-			# right_line = smoothing.get_right_line()
-
-		lines = smoothing.get_left_line(), smoothing.get_right_line()
-		intersection = strategy(lines)
-
-		lines[0].draw(canvas, thickness=15)
-		lines[1].draw(canvas, thickness=15)
-		intersection.draw(canvas, thickness=5)
-
-		# if not None in [left_average, right_average]:
-			# 	intersection = strategy((left_average, right_average), canvas)
+	if GUI.target_overlay:
+		GUI.draw_target(vanishing_point, original, canvas)
 
 
-
-
-
+	# Merge original image & overlay
 	combo_image = cv2.addWeighted(original, 1, canvas, 0.4, 2)
 	if GUI.polygon_overlay:
-		draw_polygon(combo_image, MASK)
+		draw_polygon(combo_image, mask)
 
-	#### GUI ####
-
-	# Handle texts
 	GUI.draw(combo_image)
 
-	# Handle split image layout
+	# Split image layout
 	if GUI.process_overlay:
 		left = combo_image
 
@@ -126,11 +81,13 @@ def main():
 
 		both = np.concatenate((left, right), axis=1)
 		cv2.imshow('Linor window', both)
+
 	else:
 		cv2.imshow('Linor window', combo_image)
 
 
 if __name__ == '__main__':
+	smoothing = Smoothing(settings["smoothing"])
 
 	while (True):
 		main()
@@ -174,9 +131,18 @@ if __name__ == '__main__':
 		elif key == ord('s'):
 			GUI.vanishing_point_strategy = not GUI.vanishing_point_strategy
 
+		elif key == ord('t'):
+			GUI.target_overlay = not GUI.target_overlay
+
+
+
+
 		elif key == ord('3'):
 			GUI.clear_overlays()
 			GUI.process_overlay = not GUI.process_overlay
+
+
+
 
 		elif key == ord('4') and GUI.process_overlay:
 			GUI.clear_overlays()
@@ -194,12 +160,3 @@ if __name__ == '__main__':
 			GUI.clear_overlays()
 			GUI.masked_overlay = not GUI.masked_overlay
 
-
-
-# last_time = 0
-# while (True):
-# 	main()
-#
-# 	fps = "fps: {}".format(1 / (time.time() - last_time))
-# 	last_time = time.time()
-# print(fps)

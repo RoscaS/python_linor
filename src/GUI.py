@@ -3,6 +3,8 @@ import time
 import cv2
 
 from src.Helpers import Colors
+from src.Line import Line
+from src.Point import Point
 from src.Settings import settings
 
 
@@ -11,7 +13,7 @@ class GUI:
 	_last_time = 0
 
 	font = cv2.FONT_HERSHEY_SIMPLEX
-	font_scale = .8
+	font_scale = .5
 	color = [255, 0, 0]
 	thickness = 1
 
@@ -19,11 +21,10 @@ class GUI:
 	top_offset = DATA_COLUMN_START_TOP
 	top_margin = 20
 	left_margin = 10
-	line_height = 25
-
-	vanishing_point_strategy = True
+	line_height = 15
 
 	lines_overlay = True
+	target_overlay = True
 	polygon_overlay = False
 
 	process_overlay = False
@@ -42,32 +43,21 @@ class GUI:
 	mask_top_width = settings["mask_top_width"]
 	mask_bottom_width = settings["mask_bottom_width"]
 
-
-
 	@classmethod
 	def draw(cls, image):
 		GUI.show_fps(image)
-		GUI.write_strategy(image)
 		GUI.write_status(image)
 		GUI.mask_text(image)
 
 	@classmethod
 	def show_fps(cls, image):
-		if not cls.fps_counter: return
+		if not cls.fps_counter:
+			return
 		fps = round(1 / (time.time() - cls._last_time), 2)
 		cls.write(image, f"frame: {cls._frames}", (10, cls.top_margin))
 		cls.write(image, f"fps: {fps}", (10, cls.top_margin + cls.line_height))
 		cls._last_time = time.time()
 		cls._frames += 1
-
-	@classmethod
-	def write_strategy(cls, image):
-		position = (10,  cls.top_margin + 2 * cls.line_height + 10)
-		strategy = "Vanising point" \
-			if cls.vanishing_point_strategy \
-			else "Lane center"
-
-		cls.write(image, f"(s) Strategy: {strategy}", position, Colors.green())
 
 	@classmethod
 	def write_status(cls, image):
@@ -84,19 +74,54 @@ class GUI:
 
 	@classmethod
 	def mask_text(cls, image):
-		if not cls.polygon_overlay: return
+		if not cls.polygon_overlay:
+			return
 		center = 512
 		top_center = (center, cls.mask_top_y - 10)
 		bottom_center = (center, cls.mask_bottom_y - 10)
 		top_left = (5, cls.mask_top_y)
 		bottom_left = (5, cls.mask_bottom_y)
 
-		cls.write(image, f"y = {cls.mask_top_y}px", top_left, Colors.white(), .3, 1)
-		cls.write(image, f"y = {cls.mask_bottom_y}px", bottom_left, Colors.white(), .3, 1)
+		cls.write(image, f"y = {cls.mask_top_y}px", top_left, Colors.white(),
+				  .3, 1)
+		cls.write(image, f"y = {cls.mask_bottom_y}px", bottom_left,
+				  Colors.white(), .3, 1)
 
-		cls.write(image, f"<- {cls.mask_top_width}px ->", top_center, Colors.white(), .3, 1)
-		cls.write(image, f"<- {cls.mask_bottom_width}px ->", bottom_center, Colors.white(), .3, 1)
+		cls.write(image, f"<- {cls.mask_top_width}px ->", top_center,
+				  Colors.white(), .3, 1)
+		cls.write(image, f"<- {cls.mask_bottom_width}px ->", bottom_center,
+				  Colors.white(), .3, 1)
 
+	@classmethod
+	def draw_target(cls, vanishing_point, hard_image, blended_image):
+		if not cls.target_overlay:
+			return
+		max_width = settings["resolution"][0]
+		height = settings["target_height"]
+		center = Point(max_width / 2, height)
+
+		center.draw(blended_image, 9, Colors.white(), 2)
+
+		left = Point(200, height)
+		right = Point(center.x - 11, height)
+		Line(left, right).draw(blended_image, color=Colors.white(),
+							   thickness=1)
+
+		left = Point(center.x + 11, height)
+		right = Point(max_width - 200, height)
+		Line(left, right).draw(blended_image, color=Colors.white(),
+							   thickness=1)
+
+		indicator = vanishing_point
+		indicator.y = height
+		indicator.draw(hard_image, 1, Colors.blue(), 5)
+
+		value = center.x - vanishing_point.x
+		position = center
+		position.x -= 14
+		position.y -= 20
+		cls.write(hard_image, f"{-value}", position.get(), Colors.white(), .5,
+				  1)
 
 	@classmethod
 	def append_col(cls, image, text, value):
@@ -106,7 +131,8 @@ class GUI:
 		cls.write(image, text, position, color)
 
 	@classmethod
-	def write(cls, image, text, position, color=None, scale=None, thickness=None):
+	def write(cls, image, text, position, color=None, scale=None,
+			  thickness=None):
 		color = cls.color if color == None else color
 		scale = cls.font_scale if scale == None else scale
 		thickness = cls.thickness if thickness == None else thickness

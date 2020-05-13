@@ -1,3 +1,5 @@
+import random
+
 
 class Colors:
 	@classmethod
@@ -20,3 +22,10 @@ class Colors:
 
 	@classmethod
 	def pink(cls): return [156, 127, 254]
+
+	@classmethod
+	def rand_color(cls):
+		r = random.randint(0, 255)
+		g = random.randint(0, 255)
+		b = random.randint(0, 255)
+		return r, g, b

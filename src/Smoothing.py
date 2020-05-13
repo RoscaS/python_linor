@@ -1,10 +1,9 @@
-import numpy as np
 
 from src.Line import Line
-from src.Point import Point
 
 
 class Smoothing:
+
 	def __init__(self, frames: int):
 		self.frames = frames
 		self.left_lines = [Line(coords=[0,0,0,0])]
@@ -25,3 +24,5 @@ class Smoothing:
 
 	def get_right_line(self) -> Line:
 		return Line.average(self.right_lines)
+
+
