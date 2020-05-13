@@ -30,7 +30,7 @@ def main():
 	"""
 	mask = compute_mask()
 
-	# Screen capture
+	# Screen capture;
 	screen_cap = capture_window()
 	original = cv2.cvtColor(screen_cap, cv2.COLOR_BGR2RGB)
 	canvas = np.zeros_like(original)
