@@ -3,6 +3,7 @@
 ## User guide (fr)
 
 * Préférez la version pdf dans le dossier docs/
+* Vidéo de [démonstration](#).
 
 ### Hiérarchie
 
