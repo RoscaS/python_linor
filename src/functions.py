@@ -17,7 +17,7 @@ from src.tools.Helpers import Colors
 from src.objects.Line import Line
 from src.objects.Point import Point
 from settings import settings
-from src.tools.Capture import capture_screen_region
+from src.tools.capture import capture_screen_region
 
 
 def capture_window():
