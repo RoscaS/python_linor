@@ -17,6 +17,7 @@ __pycache__/*
 # Generated files
 .idea/**/contentModel.xml
 
+
 # Sensitive or high-churn files
 .idea/**/dataSources/
 .idea/**/dataSources.ids
