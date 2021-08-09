@@ -9,6 +9,6 @@ setup(
     install_requires=[
         "numpy == 1.18.4",
         "opencv-contrib-python == 4.2.0.34",
-        "pywin32 == 227",
+        "pywin32 == 301",
     ]
 )
